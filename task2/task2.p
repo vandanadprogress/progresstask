@@ -29,7 +29,7 @@ define variable lcBirthDate as character no-undo.
 set lcFilePath.
 
 assign 
-    lcFilePath =    lcFilePath + "\batask\task2\report\"
+    lcFilePath =    lcFilePath + "\task2\report\"
     lcDate     =    string(year(today) * 10000 + MONTH(today) * 100  + DAY(today))
     lcTime     =    string(time, "HH:MM:SS")
     lcTime     =    entry(1,lcTime,':') + ENTRY(2,lcTime,':') + ENTRY(3,lcTime,':')
