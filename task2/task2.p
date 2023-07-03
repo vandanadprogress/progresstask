@@ -14,59 +14,57 @@
 
 /* ***************************  Definitions  ************************** */
 
-define stream   strReport.
-define variable lcFilePath as character no-undo format 'X(100)'.
-define variable lcFileName as character no-undo.
-define variable lcDate     as character no-undo.
-define variable lcTime     as character no-undo.
-define variable liAge      as integer   no-undo.
-define variable lcFirstName as character no-undo.
-define variable lclastname  as character no-undo.
-define variable lcEmpCnt    as integer no-undo.
-define variable lcFamCnt    as integer no-undo.
-define variable lcBirthDate as character no-undo.
+DEFINE STREAM   strReport.
+DEFINE VARIABLE lcFilePath  AS CHARACTER    NO-UNDO FORMAT 'X(100)'.
+DEFINE VARIABLE lcFileName  AS CHARACTER    NO-UNDO.
+DEFINE VARIABLE lcDate      AS CHARACTER    NO-UNDO.
+DEFINE VARIABLE lcTime      AS CHARACTER    NO-UNDO.
+DEFINE VARIABLE liAge       AS INTEGER      NO-UNDO.
+DEFINE VARIABLE lcFirstName AS CHARACTER    NO-UNDO.
+DEFINE VARIABLE lclastname  AS CHARACTER    NO-UNDO.
+DEFINE VARIABLE lcEmpCnt    AS INTEGER      NO-UNDO.
+DEFINE VARIABLE lcFamCnt    AS INTEGER      NO-UNDO.
+DEFINE VARIABLE lcBirthDate AS CHARACTER    NO-UNDO.
 
-set lcFilePath.
+SET lcFilePath.
 
-assign 
-    lcFilePath =    lcFilePath + "\task2\report\"
-    lcDate     =    string(year(today) * 10000 + MONTH(today) * 100  + DAY(today))
-    lcTime     =    string(time, "HH:MM:SS")
-    lcTime     =    entry(1,lcTime,':') + ENTRY(2,lcTime,':') + ENTRY(3,lcTime,':')
+ASSIGN 
+    lcFilePath =    lcFilePath + "\batask\task2\report\"
+    lcDate     =    STRING(YEAR(TODAY) * 10000 + MONTH(TODAY) * 100  + DAY(TODAY))
+    lcTime     =    STRING(TIME, "HH:MM:SS")
+    lcTime     =    ENTRY(1,lcTime,':') + ENTRY(2,lcTime,':') + ENTRY(3,lcTime,':')
     lcFileName =    "EmployeesReport_" + lcDate + '_' + lcTime + ".csv".
 
-output stream strReport to value(lcFilePath + lcFileName).
-export stream strReport delimiter ';' "EmpNum" "Type" "FirstName" "LastName" "BirthDate".
+OUTPUT STREAM strReport TO VALUE(lcFilePath + lcFileName).
+EXPORT STREAM strReport DELIMITER ';' "EmpNum" "Type" "FirstName" "LastName" "BirthDate".
 
-for each employee no-lock
-    by employee.birthdate:
+FOR EACH Employee NO-LOCK
+    BY Employee.Birthdate:
         
-    liAge = year(today) - YEAR(birthdate).
+    liAge = YEAR(TODAY) - YEAR(Employee.Birthdate).
     
-    if liAge > 40 then next.
+    IF liAge > 40 THEN NEXT.
     
-    if not can-find(first Family where Family.EmpNum = Employee.EmpNum) then next.
-    
-    lcBirthDate =   SUBST("&1-&2-&3", string(year(Employee.BirthDate),"9999"), string(month(Employee.BirthDate),"99"), string(day(Employee.BirthDate),"99")).
-    
-    export stream strReport delimiter ';' Employee.EmpNum "Employee" Employee.FirstName Employee.LastName lcBirthDate.
+    IF NOT CAN-FIND(FIRST Family WHERE Family.EmpNum = Employee.EmpNum) THEN NEXT.
+       
+    EXPORT STREAM strReport DELIMITER ';' Employee.EmpNum "Employee" Employee.FirstName Employee.LastName ISO-DATE(Employee.BirthDate).
     
     lcEmpCnt = lcEmpCnt + 1.
     
-    for each Family no-lock
-        where Family.EmpNum = Employee.empnum
-        by birthdate descending:
+    FOR EACH Family NO-LOCK
+        WHERE Family.EmpNum = Employee.empnum
+        BY birthdate DESCENDING:
             
-        assign lcFirstName  =   entry(1, Family.RelativeName, " ")
-               lcLastName   =   entry(2, Family.RelativeName, " ")
-               lcBirthDate  =   SUBST("&1-&2-&3", string(year(Family.BirthDate),"9999"), 
-                                string(month(Family.BirthDate),"99"), string(day(Family.BirthDate),"99"))
+        ASSIGN lcFirstName  =   ENTRY(1, Family.RelativeName, " ")
+               lcLastName   =   ENTRY(2, Family.RelativeName, " ")
                lcFamCnt     =   lcFamCnt + 1.
                 
-        export stream strReport delimiter ';' ""  sports2020.Family.Relation lcFirstName lcLastName  lcBirthDate.
+        EXPORT STREAM strReport DELIMITER ';' "" Family.Relation lcFirstName lcLastName ISO-DATE(Family.BirthDate).
         
-    end.
+    END.
            
-end.
+END.
 
-put stream strReport unformatted "Total Employees - " + String(lcEmpCnt) + '    ' +  " Total Family Members - " + String(lcFamCnt) skip.
+PUT STREAM strReport UNFORMATTED "Total Employees - " + STRING(lcEmpCnt) + '    ' +  " Total Family Members - " + STRING(lcFamCnt) SKIP.
+
+OUTPUT STREAM strReport CLOSE.
