@@ -1,0 +1,10 @@
+Reading File: C:\Users\rvtej\Progress\Developer Studio 12.2\workspace\batask\task1\EmployeesReport_20220401_101220.csv20230704150047
+2023-07-04T15:00:47.000+05:30 - Total Employees;"3";"Total Family Members";"6" - TRACE: Footer Details
+2023-07-04T15:00:47.000+05:30 - Tom;Ahern;Son;2018-06-05 - INFO: Family record created.
+2023-07-04T15:00:47.000+05:30 - Jenny;Ahern;Daughter;2015-12-14 - WARN: Family record updated.
+2023-07-04T15:00:47.000+05:30 - Larry;Ahern;Son;2013-09-12 - WARN: Family record updated.
+2023-07-04T15:01:06.000+05:30 - Jenny;Shaw;Daughter;2015-09-19 - WARN: Family record updated.
+2023-07-04T15:01:06.000+05:30 - Sam;Shaw;Son;2013-04-16 - WARN: Family record updated.
+2023-07-04T15:01:06.000+05:30 - Sue;Shaw;Spouse;1983-09-26 - WARN: Family record updated.
+2023-07-04T15:01:06.000+05:30 - Vandana;Devanaboyana;Employee;1991-07-09 - FATAL: Employee Details not available
+Records Updated: 6 ; Error Records: 2
